@@ -105,7 +105,7 @@ def create_image_with_stats(ascii_art_filename, username):
     img_width = 1400
     img_height = 700 
     ascii_font_size = 9.3333333333 # it's 150 chars wide do some math
-    stats_font_size = 20   # Larger font size for GitHub stats
+    stats_font_size = 24 
     ascii_art_width = img_width // 2
     font_path = "./res/DejaVuSansMono.ttf"
 
