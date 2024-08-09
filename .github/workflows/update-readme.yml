@@ -33,7 +33,6 @@ jobs:
         git config --global user.email 'jmattaa@users.noreply.github.com'
         git remote set-url origin https://x-access-token:${{ secrets.PAT }}@github.com/${{ github.repository }}
         git add img.png
-        git add README.md
         git commit -m "Update profile readme"
         git push
 
