@@ -160,10 +160,10 @@ def create_image_with_stats(ascii_art_filename, username):
     # Convert to percentage
     language_percentage = {lang: (bytes / total_bytes) * 100 for lang, bytes in language_stats.items()}
     sorted_languages = sorted(language_percentage.items(), key=lambda x: x[1], reverse=True)[:6] # get top 6
-    formatted_languages = "\n".join(f"    {lang} ({percentage:.2f})" for lang, percentage in sorted_languages)
+    formatted_languages = "\n".join(f"    {lang} ({percentage:.2f})," for lang, percentage in sorted_languages)
 
     top_repos = sorted(repos, key=lambda x: x['stargazers_count'], reverse=True)[:3] # only get 3
-    formatted_top_repos = "\n".join(f"    {name} ({stars} stars)" for repo in top_repos for name, stars in [(repo['name'], repo['stargazers_count'])])
+    formatted_top_repos = "\n".join(f"    {name} ({stars} stars)," for repo in top_repos for name, stars in [(repo['name'], repo['stargazers_count'])])
 
     # Draw GitHub stats on the right side
     text = (
@@ -183,9 +183,10 @@ def create_image_with_stats(ascii_art_filename, username):
         f"Github.stars_recieved: {total_stars}\n"
         "\n"
         "Github.languages:\n"
-        f"{formatted_languages}\n"
+        f"[{formatted_languages}]\n"
+        "\n"
         "Github.top_repos: \n"
-        f"{formatted_top_repos}\n"
+        f"[{formatted_top_repos}]\n"
     )
 
     draw_highlighted_text(draw, (ascii_art_width + 20, 20), text, stats_font, stats_font_size, THEME_COLS)

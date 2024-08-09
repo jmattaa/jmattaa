@@ -1,1 +1,1 @@
-![My GitHub Stats](./img.pmg)
+![My GitHub Stats](./img.png)
