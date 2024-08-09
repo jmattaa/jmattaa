@@ -25,7 +25,7 @@ jobs:
 
     - name: Run script to update image
       run: |
-        python script.py
+        python main.py
 
     - name: Commit and push changes
       run: |
