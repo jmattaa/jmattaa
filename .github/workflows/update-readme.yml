@@ -29,8 +29,8 @@ jobs:
 
     - name: Commit and push changes
       run: |
-        git config --global user.name 'jmattaa'
-        git config --global user.email 'jmattaa@users.noreply.github.com'
+        git config user.name 'github-actions[bot]'
+        git config user.email 'github-actions[bot]@users.noreply.github.com'
         git remote set-url origin https://x-access-token:${{ secrets.PAT }}@github.com/${{ github.repository }}
         git add img.png
         git commit -m "Update profile readme"
