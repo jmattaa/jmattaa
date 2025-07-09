@@ -16,24 +16,30 @@ THEME_COLS = {
     'white': '#a89984',
 }
 
+
 def textsize(text, font):
     im = Image.new(mode="P", size=(0, 0))
     draw = ImageDraw.Draw(im)
     _, _, width, height = draw.textbbox((0, 0), text=text, font=font)
     return width, height
 
-def format_plural(unit): # yeh
+
+def format_plural(unit):  # yeh
     return 's' if unit != 1 else ''
-# Returns how old i am 
+# Returns how old i am
+
+
 def age(birthday):
     diff = relativedelta.relativedelta(datetime.datetime.today(), birthday)
     return '{} {}, {} {}, {} {}{}'.format(
-        diff.years, 'year' + format_plural(diff.years), 
-        diff.months, 'month' + format_plural(diff.months), 
+        diff.years, 'year' + format_plural(diff.years),
+        diff.months, 'month' + format_plural(diff.months),
         diff.days, 'day' + format_plural(diff.days),
         ' 🎂' if (diff.months == 0 and diff.days == 0) else '')
 
 # Function to fetch GitHub data
+
+
 def fetch_github_data(username):
     try:
         url = f"https://api.github.com/users/{username}"
@@ -56,6 +62,8 @@ def fetch_github_data(username):
         }
 
 # Function to load ASCII art from a file
+
+
 def load_ascii_art(filename):
     try:
         with open(filename, 'r') as file:
@@ -63,6 +71,7 @@ def load_ascii_art(filename):
     except FileNotFoundError:
         print(f"Error: File {filename} not found.")
         return ""
+
 
 def draw_highlighted_text(draw, position, text, font, fontsize, theme_cols):
     left_side_color = theme_cols['yellow']
@@ -74,16 +83,16 @@ def draw_highlighted_text(draw, position, text, font, fontsize, theme_cols):
     for line in text.split('\n'):
         # Split the line at the semicolon
         parts = line.split(':')
-        
-        if len(parts) == 2:  
+
+        if len(parts) == 2:
             left_text = parts[0]
             right_text = parts[1]
             draw.text((x, y), left_text, font=font, fill=left_side_color)
             x += textsize(left_text, font=font)[0]
-            
+
             draw.text((x, y), ':', font=font, fill=semicolon_color)
             x += textsize(':', font=font)[0]
-            
+
             draw.text((x, y), right_text, font=font, fill=right_side_color)
         elif line.startswith("    "):
             draw.text((x, y), line, font=font, fill=right_side_color)
@@ -94,18 +103,19 @@ def draw_highlighted_text(draw, position, text, font, fontsize, theme_cols):
         y += fontsize
         x = position[0]
 
+
 def create_image_with_stats(ascii_art_filename, username):
     # Fetch GitHub data
     stats = fetch_github_data(username)
 
     # Load ASCII art
     ascii_art = load_ascii_art(ascii_art_filename)
-    
+
     # Settings
     img_width = 1400
-    img_height = 700 
-    ascii_font_size = 9.3333333333 # it's 150 chars wide do some math
-    stats_font_size = 24 
+    img_height = 700
+    ascii_font_size = 9.3333333333  # it's 150 chars wide do some math
+    stats_font_size = 24
     ascii_art_width = img_width // 2
     font_path = "./res/DejaVuSansMono.ttf"
 
@@ -122,17 +132,20 @@ def create_image_with_stats(ascii_art_filename, username):
         return
 
     # Create an image from the ASCII art
-    ascii_art_image = Image.new('RGB', (ascii_art_width, img_height), color=THEME_COLS['bg'])
+    ascii_art_image = Image.new(
+        'RGB', (ascii_art_width, img_height), color=THEME_COLS['bg'])
     ascii_draw = ImageDraw.Draw(ascii_art_image)
-    
+
     # Split ASCII art into lines and draw on the image
     y_position = 0
     for line in ascii_art.splitlines():
-        ascii_draw.text((0, y_position), line, fill=THEME_COLS['fg'], font=ascii_font)
+        ascii_draw.text((0, y_position), line,
+                        fill=THEME_COLS['fg'], font=ascii_font)
         y_position += ascii_font_size
-    
+
     # Resize ASCII art image to fit
-    ascii_art_image = ImageOps.fit(ascii_art_image, (ascii_art_width, img_height), method=Image.Resampling.BOX)
+    ascii_art_image = ImageOps.fit(
+        ascii_art_image, (ascii_art_width, img_height), method=Image.Resampling.BOX)
 
     # Paste ASCII art image onto the final image
     img.paste(ascii_art_image, (0, 0))
@@ -141,7 +154,8 @@ def create_image_with_stats(ascii_art_filename, username):
     total_bytes = 0
     total_stars = 0
 
-    repos_response = requests.get(f"https://api.github.com/users/{username}/repos")
+    repos_response = requests.get(
+        f"https://api.github.com/users/{username}/repos")
     repos = repos_response.json()
 
     for repo in repos:
@@ -158,16 +172,21 @@ def create_image_with_stats(ascii_art_filename, username):
                     language_stats[lang] = bytes
 
     # Convert to percentage
-    language_percentage = {lang: (bytes / total_bytes) * 100 for lang, bytes in language_stats.items()}
-    sorted_languages = sorted(language_percentage.items(), key=lambda x: x[1], reverse=True)[:8] # get top 8
-    formatted_languages = "\n".join(f"    {lang} ({percentage:.2f}%)" for lang, percentage in sorted_languages)
+    language_percentage = {
+        lang: (bytes / total_bytes) * 100 for lang, bytes in language_stats.items()}
+    sorted_languages = sorted(language_percentage.items(
+    ), key=lambda x: x[1], reverse=True)[:8]  # get top 8
+    formatted_languages = "\n".join(
+        f"    {lang} ({percentage:.2f}%)" for lang, percentage in sorted_languages)
 
-    top_repos = sorted(repos, key=lambda x: x['stargazers_count'], reverse=True)[:3] # only get 3
-    formatted_top_repos = "\n".join(f"    {name} ({stars} stars)" for repo in top_repos for name, stars in [(repo['name'], repo['stargazers_count'])])
+    top_repos = sorted(repos, key=lambda x: x['stargazers_count'], reverse=True)[
+        :3]  # only get 3
+    formatted_top_repos = "\n".join(f"    {name} ({stars} stars)" for repo in top_repos for name, stars in [
+                                    (repo['name'], repo['stargazers_count'])])
 
     # Draw GitHub stats on the right side
     text = (
-        f"jonathan@{username}\n"
+        f"jonathan@{username} - Christ is King ✝\n"
         "------------\n"
         f"OS: Arch (btw)\n"
         f"Uptime: {age(datetime.datetime(2007, 8, 18))}\n"
@@ -187,11 +206,11 @@ def create_image_with_stats(ascii_art_filename, username):
         "\n"
     )
 
-    draw_highlighted_text(draw, (ascii_art_width + 20, 20), text, stats_font, stats_font_size, THEME_COLS)
+    draw_highlighted_text(draw, (ascii_art_width + 20, 20),
+                          text, stats_font, stats_font_size, THEME_COLS)
 
     # Save the image
     img.save('img.png')
 
+
 create_image_with_stats('./res/me.txt', 'jmattaa')
-
-
