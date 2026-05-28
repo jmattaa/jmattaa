@@ -179,9 +179,8 @@ def create_image_with_stats(ascii_art_filename, username):
     formatted_languages = "\n".join(
         f"    {lang} ({percentage:.2f}%)" for lang, percentage in sorted_languages)
 
-    top_repos = sorted(repos, key=lambda x: x['stargazers_count'], reverse=True)[
-        :3]  # only get 3
-    formatted_top_repos = "\n".join(f"    {name} ({stars} stars)" for repo in top_repos for name, stars in [
+    top_repos = sorted(repos, key=lambda x: x['stargazers_count'], reverse=True)[:3]
+    formatted_top_repos = "\n".join(f"    - {name} ({stars} stars)" for repo in top_repos for name, stars in [
                                     (repo['name'], repo['stargazers_count'])])
 
     # Draw GitHub stats on the right side
